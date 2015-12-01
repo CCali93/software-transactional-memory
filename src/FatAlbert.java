@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -14,6 +15,8 @@ public class FatAlbert extends Thread {
     }
 
     public void run() {
+        Random random = new Random();
+
         start.countDown();
 
         try {
@@ -22,6 +25,29 @@ public class FatAlbert extends Thread {
             e.printStackTrace();
         }
 
-        return;
+        while(TimeTracker.getCurrentTime() < (TimeHelp.DAY.ms() * 15)) {
+            int nRequests = random.nextInt(3) + 2;
+
+            for(int i = 0; i < nRequests; i++) {
+                boolean gotACookie = vendingCookies.useEnergy(1),
+                        gotCandy = vendingCandy.useEnergy(1);
+
+                if (gotACookie && gotCandy) {
+                    System.out.println("Hey, hey hey!");
+                } else if (gotACookie) {
+                    System.out.println("At least I got a Cookie");
+                } else if (gotCandy) {
+                    System.out.println("At least I got a Candy Bar");
+                } else {
+                    System.out.println("No food for me today");
+                }
+
+                try {
+                    Thread.sleep(random.nextInt(TimeHelp.DAY.ms() / nRequests) + 1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

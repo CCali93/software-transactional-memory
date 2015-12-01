@@ -28,8 +28,7 @@ public class EnergySource {
     replenishTimer.schedule(new Runnable() {
       public void run() { 
         replenish();
-        if (keepRunning.get()) replenishTimer.schedule(
-          this, 3, TimeUnit.SECONDS);
+        if (keepRunning.get()) replenishTimer.schedule(this, 3, TimeUnit.SECONDS);
       }
     }, 3, TimeUnit.SECONDS);
   }
@@ -40,7 +39,10 @@ public class EnergySource {
     return energySource;
   }
 
-  public void stopEnergySource() { keepRunning.swap(false); }
+  public void stopEnergySource() {
+    keepRunning.swap(false);
+    replenishTimer.shutdown();
+  }
 
   public long getUnitsAvailable() { return level.get(); }
 

@@ -5,14 +5,16 @@ import java.util.concurrent.CountDownLatch;
  */
 public class CookieMonster extends Thread {
     private CountDownLatch start;
-    private EnergySource vendingCookie;
+    private EnergySource vendingCookies;
 
-    public CookieMonster(CountDownLatch start, EnergySource vendingCookie) {
+    public CookieMonster(CountDownLatch start, EnergySource vendingCookies) {
         this.start = start;
-        this.vendingCookie = vendingCookie;
+        this.vendingCookies = vendingCookies;
     }
 
     public void run() {
+        final int COOKIE_INTERVAL = 500;
+
         start.countDown();
 
         try {
@@ -21,6 +23,18 @@ public class CookieMonster extends Thread {
             e.printStackTrace();
         }
 
-        return;
+        while(TimeTracker.getCurrentTime() < (TimeHelp.DAY.ms() * 15)) {
+            if (vendingCookies.useEnergy(1)) {
+                System.out.println("Me love cookies");
+            } else {
+                System.out.println("Me hungry");
+            }
+
+            try {
+                Thread.sleep(COOKIE_INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

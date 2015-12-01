@@ -1,5 +1,4 @@
 public enum TimeHelp {
-    HALF_DAY(500),
     DAY(1000);
 
     private final int msTime;

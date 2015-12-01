@@ -33,8 +33,7 @@ public class WillyWonka extends Thread {
                 e.printStackTrace();
             }
 
-            if (vendingCandy.getUnitsAvailable() > 0) {
-                vendingCandy.useEnergy(1);
+            if (vendingCandy.useEnergy(1)) {
                 System.out.println("The Candy Man Can");
             } else {
                 System.out.println("Violet - you're turning violet");
