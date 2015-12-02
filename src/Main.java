@@ -22,7 +22,7 @@ public class Main {
         }
 
         try {
-            programStart.await();
+            //programStart.await();
             timeTracker.startDay();
 
             for(Thread actor : actors) {
@@ -34,6 +34,5 @@ public class Main {
 
         vendingCookies.stopEnergySource();
         vendingCandy.stopEnergySource();
-
     }
 }
