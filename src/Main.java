@@ -1,4 +1,3 @@
-import java.sql.Time;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -6,8 +5,8 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Main {
     public static void main(String[] args) {
-        EnergySource vendingCookies = EnergySource.create(),
-            vendingCandy = EnergySource.create();
+        EnergySource vendingCookies = EnergySource.create("Cookie"),
+            vendingCandy = EnergySource.create("Candy Bar");
 
         CountDownLatch programStart = new CountDownLatch(3);
         TimeTracker timeTracker = new TimeTracker();
@@ -23,6 +22,7 @@ public class Main {
         }
 
         try {
+            programStart.await();
             timeTracker.startDay();
 
             for(Thread actor : actors) {

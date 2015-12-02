@@ -24,7 +24,7 @@ public class CookieMonster extends Thread {
         }
 
         while(TimeTracker.getCurrentTime() < (TimeHelp.DAY.ms() * 15)) {
-            if (vendingCookies.useEnergy(1)) {
+            if (vendingCookies.useEnergy(1, this)) {
                 System.out.println("Me love cookies");
             } else {
                 System.out.println("Me hungry");

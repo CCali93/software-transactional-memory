@@ -29,8 +29,8 @@ public class FatAlbert extends Thread {
             int nRequests = random.nextInt(3) + 2;
 
             for(int i = 0; i < nRequests; i++) {
-                boolean gotACookie = vendingCookies.useEnergy(1),
-                        gotCandy = vendingCandy.useEnergy(1);
+                boolean gotACookie = vendingCookies.useEnergy(1, this),
+                        gotCandy = vendingCandy.useEnergy(1, this);
 
                 if (gotACookie && gotCandy) {
                     System.out.println("Hey, hey hey!");

@@ -14,6 +14,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class EnergySource {
+  private String sourceName;
+
   private final long MAXLEVEL = 6;
   final Ref<Long> level = new Ref<Long>(MAXLEVEL);
   final Ref<Long> usageCount = new Ref<Long>(0L);
@@ -33,8 +35,9 @@ public class EnergySource {
     }, 3, TimeUnit.SECONDS);
   }
   
-  public static EnergySource create() {
+  public static EnergySource create(String sourceName) {
     final EnergySource energySource = new EnergySource();
+    energySource.sourceName = sourceName;
     energySource.init();
     return energySource;
   }
@@ -48,28 +51,46 @@ public class EnergySource {
 
   public long getUsageCount() { return usageCount.get(); }
 
-  public boolean useEnergy(final long units) {
-    return  new Atomic<Boolean>() {
-      public Boolean atomically() {
-        long currentLevel = level.get();
-        if(units > 0 && currentLevel >= units) {
-          level.swap(currentLevel - units);
-          usageCount.swap(usageCount.get() + 1);
-          return true;          
-        } else {
-          return false;
-        }
-      }  
-    }.execute();
-  }
+    public boolean useEnergy(final long units, Thread actor) {
+        return  new Atomic<Boolean>() {
+            public Boolean atomically() {
+                long currentLevel = level.get();
 
-  private void replenish() {
-    new Atomic() {
-      public Object atomically() {
-        long currentLevel = level.get();
-        if (currentLevel < MAXLEVEL) level.swap(currentLevel + 1);
-        return null;
-      }
-    }.execute();
-  }
+                String spaces, name;
+
+                if (actor instanceof FatAlbert) {
+                    spaces = "            ";
+                    name = "Fat Albert";
+                } else if (actor instanceof WillyWonka) {
+                    spaces = "        ";
+                    name = "Willy Wonka";
+                } else {
+                    spaces = "    ";
+                    name = "Cookie Monster";
+                }
+
+                if(units > 0 && currentLevel >= units) {
+                    level.swap(currentLevel - units);
+                    usageCount.swap(usageCount.get() + 1);
+
+                    System.out.printf("%s %s got a %s\n", spaces, name, sourceName);
+
+                    return true;
+                } else {
+                    System.out.printf("%s %s couldn't get a %s\n", spaces, name, sourceName);
+                    return false;
+                }
+            }
+        }.execute();
+    }
+
+    private void replenish() {
+      new Atomic() {
+          public Object atomically() {
+              long currentLevel = level.get();
+              if (currentLevel < MAXLEVEL) level.swap(MAXLEVEL);
+              return null;
+          }
+      }.execute();
+    }
 }
